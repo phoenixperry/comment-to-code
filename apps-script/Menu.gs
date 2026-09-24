@@ -108,10 +108,13 @@ function menuWebDetails() {
   var props = PropertiesService.getScriptProperties();
   if (!props.getProperty('WEB_TOKEN')) props.setProperty('WEB_TOKEN', Utilities.getUuid());
   ensureSheets_();
-  // ScriptApp.getService().getUrl() returns a dead URL on some Workspace domains,
-  // so ask once for the real one and remember it.
-  var url = props.getProperty('WEB_URL');
-  if (!url) {
+  // Ask the Apps Script API for this script's own web app deployment, so the URL
+  // always matches this Sheet's token. (ScriptApp.getService().getUrl() returns a
+  // dead URL on some Workspace domains.) Fall back to asking once.
+  var url = findWebAppUrl_() || props.getProperty('WEB_URL');
+  if (url) {
+    props.setProperty('WEB_URL', url);
+  } else {
     var res = ui.prompt('Web app URL',
       'In the Apps Script editor: Deploy → Manage deployments → copy the Web app URL ' +
       '(ends in /exec) and paste it here.\n\nNot deployed yet? Deploy → New deployment → Web app, ' +
@@ -131,6 +134,23 @@ function menuWebDetails() {
     '<i>Reset web app URL</i> if you redeploy under a new address.</p></div>'
   ).setWidth(460).setHeight(360);
   ui.showModalDialog(html, 'FigJam connection');
+}
+
+/** This script's newest versioned web app deployment, as an /exec URL; '' if none or the API is off. */
+function findWebAppUrl_() {
+  try {
+    var res = UrlFetchApp.fetch('https://script.googleapis.com/v1/projects/' + ScriptApp.getScriptId() + '/deployments',
+      { headers: { Authorization: 'Bearer ' + ScriptApp.getOAuthToken() }, muteHttpExceptions: true });
+    if (res.getResponseCode() !== 200) return '';
+    var deps = (JSON.parse(res.getContentText()).deployments || []).filter(function (d) {
+      return d.deploymentConfig && d.deploymentConfig.versionNumber &&
+        (d.entryPoints || []).some(function (e) { return e.entryPointType === 'WEB_APP'; });
+    });
+    deps.sort(function (a, b) { return String(b.updateTime).localeCompare(String(a.updateTime)); });
+    return deps.length ? 'https://script.google.com/macros/s/' + deps[0].deploymentId + '/exec' : '';
+  } catch (e) {
+    return '';
+  }
 }
 
 /** Accepts /macros/s/ID/exec, /a/macros/DOMAIN/s/ID/exec or /a/DOMAIN/macros/s/ID/…; returns the plain /exec form. */

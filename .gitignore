@@ -2,3 +2,4 @@ node_modules/
 figjam-plugin/dist/
 .clasp.json
 .DS_Store
+release/Comment-to-Code-plugin/

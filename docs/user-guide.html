@@ -43,6 +43,11 @@
   .warn { background: var(--warn-soft); }
   .warn b:first-child { color: var(--warn); }
   .ok { background: var(--ok-soft); }
+  .stop { border: 2.5pt solid #c62828; background: #fdecea; border-radius: 10pt; padding: 11pt 14pt 10pt; margin: 8pt 0 12pt; break-inside: avoid; }
+  .stop .big { font-size: 15pt; font-weight: 800; color: #c62828; letter-spacing: -0.01em; line-height: 1.2; margin-bottom: 5pt; display: flex; align-items: center; gap: 8pt; }
+  .stop .big .sign { flex: none; width: 24pt; height: 24pt; border-radius: 50%; background: #c62828; color: #fff; font-size: 15pt; display: flex; align-items: center; justify-content: center; }
+  .stop p { margin: 0 0 4pt; font-size: 10pt; }
+  .stop ul { margin: 2pt 0 0; }
   table { width: 100%; border-collapse: collapse; margin: 6pt 0 10pt; font-size: 9.6pt; break-inside: auto; }
   th { text-align: left; font-size: 8pt; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); border-bottom: 1.2pt solid var(--ink); padding: 4pt 6pt; }
   td { border-bottom: .6pt solid var(--rule); padding: 4pt 6pt; vertical-align: top; }
@@ -84,9 +89,9 @@
       <div><span>Part 2 · The Sheet</span><span>3</span></div>
       <div><span>Part 3 · The board and themes</span><span>4</span></div>
       <div><span>Part 4 · Working as a team</span><span>5</span></div>
-      <div><span>Part 5 · Setting up a new project (once, by one person)</span><span>6</span></div>
-      <div><span>Part 6 · Installing the FigJam plugin</span><span>7</span></div>
-      <div><span>Part 7 · Troubleshooting</span><span>8</span></div>
+      <div><span>Part 5 · Setting up a new project (<b style="color:#c62828">check first: once per project, by one person</b>)</span><span>6</span></div>
+      <div><span>Part 6 · Installing the FigJam plugin</span><span>8</span></div>
+      <div><span>Part 7 · Troubleshooting</span><span>9</span></div>
     </div>
   </div>
   <p class="meta">Version 1 · September 2026<br>Designed for reflexive thematic analysis: codes are expected to change, and the tool keeps a record of how they did.</p>
@@ -96,7 +101,7 @@
 <section>
   <div class="kicker">Part 1</div>
   <h2>Coding: for everyone</h2>
-  <p>You code by commenting. There's no new app to learn and nothing to install for this part.</p>
+  <p>You code by commenting. There's no new app to learn and nothing to install for this part. <b style="color:#c62828">You don't need to set anything up to code.</b> If your project doesn't have a Sheet yet, read the warning at the top of Part 5 before anyone makes one.</p>
 
   <div class="example">
     <div class="comment">
@@ -236,10 +241,22 @@
 <section>
   <div class="kicker">Part 5</div>
   <h2>Setting up a new project</h2>
+
+  <div class="stop">
+    <div class="big"><span class="sign">!</span>STOP: does your project already have a Sheet?</div>
+    <p><b>Each project needs exactly one Comment-to-Code Sheet and one FigJam board, shared by the whole team.</b> If two people each set up their own, the codes, themes and recodes split across two Sheets that don't know about each other, and the board refuses the second Sheet.</p>
+    <ul>
+      <li><b>Ask your project lead or team first</b>, and look in the project's Drive folder for a Sheet called <em>Comment-to-Code</em>.</li>
+      <li><b>If it exists: don't set anything up.</b> Ask for Editor access to that Sheet, the board link, and (if you'll click Sync) the web app URL and token. Then go to Part 6.</li>
+      <li><b>Only if there's definitely no Sheet yet,</b> and your team agrees you're the one setting it up, carry on below.</li>
+    </ul>
+  </div>
+
   <p>One person does this once per project, in about 15 minutes. That person becomes the <b>project owner</b>: the web app runs under their Google account, and edits to the documents are made as them.</p>
 
   <h3>A. Transcripts and Sheet</h3>
   <ol class="steps">
+    <li><b>Check with your team that no Sheet exists yet</b> (see the box above). If one does, stop here.</li>
     <li><b>Put the anonymised transcripts in one Google Drive folder.</b> Subfolders are fine (e.g. one per participant). Share the folder with your team as <em>Commenter</em> or <em>Editor</em>.</li>
     <li><b>Make your own copy of the template Sheet.</b> Open the template link and click <span class="menu">Make a copy</span>:<br>
       <a href="https://docs.google.com/spreadsheets/d/15pygKZGIGulipCiUQ0BFFjVLE6YvBoRMJ5xwd9jFisc/copy">docs.google.com/spreadsheets/d/15pygKZGIGulipCiUQ0BFFjVLE6YvBoRMJ5xwd9jFisc/copy</a><br>
@@ -250,10 +267,10 @@
     <li><b>Click <span class="menu">Coding → Sync now</span>.</b> The tabs are created and existing comments come in.</li>
     <li><b>In Sources, fill in <code>participant</code></b> for each file.</li>
     <li><b>Click <span class="menu">Coding → Start auto-sync</span></b> so new comments arrive every 10 minutes without anyone clicking.</li>
-    <li><b>Share the Sheet with your team.</b> Anyone who will use the Coding menu needs <em>Editor</em> access and must allow access once, as in step 4.</li>
+    <li><b>Share the Sheet with your team.</b> Anyone who will use the Coding menu needs <em>Editor</em> access and must allow access once, as in step 5.</li>
   </ol>
 
-  <h3>B. Connecting FigJam</h3>
+  <h3 style="break-before: page; margin-top: 0">B. Connecting FigJam</h3>
   <ol class="steps">
     <li><b>Open the script:</b> in the Sheet, <span class="menu">Extensions → Apps Script</span>.</li>
     <li><b>Deploy it as a web app:</b> <span class="menu">Deploy → New deployment</span> → click the gear next to <em>Select type</em> → <span class="menu">Web app</span>. Set <em>Execute as</em> to <b>Me</b> and <em>Who has access</em> to <b>Anyone</b> → <span class="menu">Deploy</span> → allow access if asked.</li>

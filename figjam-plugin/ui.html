@@ -90,8 +90,10 @@ written back to the documents), then pulls new excerpts. Stickies never move.</p
       post({ type: 'rows', rows: data.rows, colourBy: s.colourBy });
     } catch (e) {
       post({ type: 'unlock' });
-      status(notes.concat('Could not fetch: ' + e.message +
-        '\nUse the Web app URL from Apps Script → Deploy → Manage deployments (it ends in /exec), and check the deployment allows Anyone.').join('\n'));
+      const hint = /bad token/.test(e.message)
+        ? '\nThe URL and token must come from the same Sheet: copy both from that Sheet\'s Coding → FigJam connection details.'
+        : '\nCopy the URL from the Sheet: Coding → FigJam connection details. The web app must allow Anyone.';
+      status(notes.concat('Could not fetch: ' + e.message + hint).join('\n'));
       busy(false);
     }
   }
