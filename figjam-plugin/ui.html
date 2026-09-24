@@ -1,0 +1,112 @@
+<style>
+  body { font: 12px/1.45 Inter, system-ui, sans-serif; margin: 0; padding: 16px;
+         color: var(--figma-color-text); background: var(--figma-color-bg); }
+  label { display: block; margin: 0 0 4px; font-weight: 600; }
+  input, select { width: 100%; box-sizing: border-box; padding: 6px 8px; margin-bottom: 12px;
+         border: 1px solid var(--figma-color-border); border-radius: 4px;
+         background: var(--figma-color-bg); color: var(--figma-color-text); font: inherit; }
+  button { width: 100%; padding: 8px; margin-bottom: 8px; border: 0; border-radius: 6px;
+         font: inherit; font-weight: 600; cursor: pointer; }
+  .primary { background: var(--figma-color-bg-brand); color: var(--figma-color-text-onbrand); }
+  .secondary { background: var(--figma-color-bg-secondary); color: var(--figma-color-text); }
+  button:disabled { opacity: .5; cursor: default; }
+  #status { min-height: 3em; color: var(--figma-color-text-secondary); white-space: pre-wrap; }
+  .hint { color: var(--figma-color-text-tertiary); margin: -8px 0 12px; }
+</style>
+
+<label for="url">Web app URL</label>
+<input id="url" placeholder="https://script.google.com/macros/s/…/exec" />
+<label for="token">Token</label>
+<input id="token" type="password" placeholder="From Coding → FigJam connection details" />
+<label for="colourBy">Colour stickies by</label>
+<select id="colourBy">
+  <option value="theme">Theme (falls back to code)</option>
+  <option value="participant">Participant</option>
+  <option value="code">Code (uses Codes!colour if set)</option>
+</select>
+<p class="hint">Sync sends the board first (themes = sections you name; edited #tags are
+written back to the documents), then pulls new excerpts. Stickies never move.</p>
+
+<button id="sync" class="primary">Sync</button>
+<div id="status"></div>
+
+<script>
+  const $ = (id) => document.getElementById(id);
+  const post = (msg) => parent.postMessage({ pluginMessage: msg }, '*');
+  const status = (t) => { $('status').textContent = t; };
+  const settings = () => ({ url: $('url').value.trim(), token: $('token').value.trim(), colourBy: $('colourBy').value });
+
+  function save() { post({ type: 'save-settings', settings: settings() }); }
+  ['url', 'token', 'colourBy'].forEach((id) => $(id).addEventListener('change', save));
+
+  function busy(on) { $('sync').disabled = on; }
+  const withToken = (url, token) => url + (url.includes('?') ? '&' : '?') + 'token=' + encodeURIComponent(token);
+  let notes = [];
+
+  // 1. ask the plugin for the board → 2. POST it → 3. rekey recoded stickies → 4. GET rows → 5. place.
+  $('sync').onclick = () => {
+    const s = settings();
+    if (!s.url || !s.token) return status('Add the web app URL and token first.');
+    busy(true); notes = []; status('Reading board…');
+    post({ type: 'collect-board' });
+  };
+
+  async function sendBoard(stickies, meta) {
+    const s = settings();
+    // Always send, even from an empty board: the Sheet checks which board it's linked to.
+    status('Sending ' + stickies.length + ' stickies (themes, recodes)…');
+    try {
+      // text/plain keeps this a "simple" request, so Apps Script needs no CORS preflight.
+      const res = await fetch(s.url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(Object.assign({ token: s.token, stickies }, meta)),
+      });
+      const data = await res.json();
+      if (data.error) {
+        if (data.fatal) {
+          post({ type: 'unlock' });
+          status(data.error);
+          return busy(false);
+        }
+        throw new Error(data.error);
+      }
+      const n = Object.keys(data.rekeys || {}).length;
+      if (n) { post({ type: 'rekey', rekeys: data.rekeys }); notes.push(n + ' recode' + (n > 1 ? 's' : '') + ' written to documents'); }
+      (data.errors || []).forEach((e) => notes.push('⚠ ' + e));
+    } catch (e) {
+      notes.push('⚠ Could not send board: ' + e.message);
+    }
+    pull();
+  }
+
+  async function pull() {
+    const s = settings();
+    status('Fetching…');
+    try {
+      const res = await fetch(withToken(s.url, s.token));
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      post({ type: 'rows', rows: data.rows, colourBy: s.colourBy });
+    } catch (e) {
+      post({ type: 'unlock' });
+      status(notes.concat('Could not fetch: ' + e.message +
+        '\nUse the Web app URL from Apps Script → Deploy → Manage deployments (it ends in /exec), and check the deployment allows Anyone.').join('\n'));
+      busy(false);
+    }
+  }
+
+  onmessage = (e) => {
+    const msg = e.data.pluginMessage;
+    if (!msg) return;
+    if (msg.type === 'settings') {
+      $('url').value = msg.settings.url || '';
+      $('token').value = msg.settings.token || '';
+      $('colourBy').value = msg.settings.colourBy || 'theme';
+    } else if (msg.type === 'status') {
+      status(notes.concat(msg.text).join('\n')); busy(false);
+    } else if (msg.type === 'board') {
+      sendBoard(msg.stickies, { by: msg.by, boardId: msg.boardId, boardName: msg.boardName });
+    }
+  };
+</script>

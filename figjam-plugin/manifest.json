@@ -1,0 +1,28 @@
+{
+  "name": "Comment-to-Code",
+  "id": "comment-to-code-dev",
+  "api": "1.0.0",
+  "main": "dist/code.js",
+  "ui": "ui.html",
+  "editorType": [
+    "figjam"
+  ],
+  "documentAccess": "dynamic-page",
+  "networkAccess": {
+    "allowedDomains": [
+      "https://script.google.com",
+      "https://*.googleusercontent.com",
+      "https://accounts.google.com"
+    ],
+    "reasoning": "Reads coded excerpts from, and sends board snapshots to, the researcher's own Apps Script web app."
+  },
+  "relaunchButtons": [
+    {
+      "command": "open",
+      "name": "Open source passage"
+    }
+  ],
+  "permissions": [
+    "currentuser"
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "name": "coding-tool-tests",
+  "private": true,
+  "scripts": { "test": "node run.js", "sample": "node sample.js" },
+  "devDependencies": { "@xmldom/xmldom": "^0.9.0" }
+}

@@ -1,0 +1,4 @@
+node_modules/
+figjam-plugin/dist/
+.clasp.json
+.DS_Store

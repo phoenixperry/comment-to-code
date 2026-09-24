@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Comment-to-Code: user guide</title>
+<style>
+  @page { size: A4; margin: 15mm 17mm 15mm; }
+  :root {
+    --ink: #1c1c1e; --muted: #5f6368; --rule: #e3e3e6; --accent: #6b3fd4; --accent-soft: #f3effc;
+    --warn: #8a4b00; --warn-soft: #fff5e6; --ok-soft: #eef7f0; --code-bg: #f5f5f7;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font: 9.8pt/1.42 -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif; color: var(--ink); margin: 0; }
+  h1 { font-size: 30pt; line-height: 1.1; margin: 0 0 8pt; letter-spacing: -0.02em; }
+  h2 { font-size: 17pt; margin: 0 0 6pt; letter-spacing: -0.01em; break-after: avoid; }
+  h3 { font-size: 11.5pt; margin: 12pt 0 3pt; break-after: avoid; }
+  p { margin: 0 0 7pt; }
+  a { color: var(--accent); }
+  code, .tag { font: 9.5pt/1.3 "SF Mono", Menlo, Consolas, monospace; background: var(--code-bg); padding: 1pt 4pt; border-radius: 3pt; white-space: nowrap; }
+  .tag { color: var(--accent); background: var(--accent-soft); }
+  .menu { font-weight: 600; }
+  section { break-before: page; }
+  section.first { break-before: auto; }
+  .kicker { text-transform: uppercase; letter-spacing: .12em; font-size: 8pt; color: var(--accent); font-weight: 700; margin-bottom: 4pt; }
+  .lede { font-size: 12.5pt; color: var(--muted); max-width: 150mm; }
+  .cover { height: 262mm; display: flex; flex-direction: column; justify-content: space-between; }
+  .cover .meta { color: var(--muted); font-size: 9.5pt; }
+  .flow { display: flex; align-items: stretch; gap: 0; margin: 14pt 0 10pt; }
+  .flow .box { flex: 1; border: 1.2pt solid var(--rule); border-radius: 8pt; padding: 9pt 10pt; background: #fff; }
+  .flow .box b { display: block; font-size: 10.5pt; margin-bottom: 2pt; }
+  .flow .box span { color: var(--muted); font-size: 9pt; line-height: 1.35; display: block; }
+  .flow .arrow { width: 22pt; display: flex; align-items: center; justify-content: center; color: var(--accent); font-size: 14pt; }
+  .flow .back { text-align: center; color: var(--accent); font-size: 9pt; margin-top: -4pt; }
+  ol.steps { counter-reset: step; list-style: none; padding: 0; margin: 6pt 0 10pt; }
+  ol.steps > li { counter-increment: step; position: relative; padding: 0 0 5pt 24pt; break-inside: avoid; }
+  ol.steps > li::before { content: counter(step); position: absolute; left: 0; top: 0; width: 17pt; height: 17pt; border-radius: 50%;
+    background: var(--accent); color: #fff; font-size: 8.5pt; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  ul { margin: 2pt 0 8pt; padding-left: 15pt; }
+  li { margin-bottom: 2pt; }
+  .note, .warn, .ok { border-radius: 6pt; padding: 7pt 10pt; margin: 7pt 0 8pt; break-inside: avoid; font-size: 9.8pt; }
+  .note { background: var(--accent-soft); }
+  .warn { background: var(--warn-soft); }
+  .warn b:first-child { color: var(--warn); }
+  .ok { background: var(--ok-soft); }
+  table { width: 100%; border-collapse: collapse; margin: 6pt 0 10pt; font-size: 9.6pt; break-inside: auto; }
+  th { text-align: left; font-size: 8pt; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); border-bottom: 1.2pt solid var(--ink); padding: 4pt 6pt; }
+  td { border-bottom: .6pt solid var(--rule); padding: 4pt 6pt; vertical-align: top; }
+  tr { break-inside: avoid; }
+  td:first-child { width: 34%; }
+  .example { display: flex; gap: 12pt; align-items: flex-start; margin: 8pt 0 12pt; break-inside: avoid; }
+  .comment { flex: 1; border: 1pt solid var(--rule); border-radius: 8pt; padding: 8pt 10pt; font-size: 9.8pt; box-shadow: 0 1pt 3pt rgba(0,0,0,.06); }
+  .comment .who { font-weight: 600; font-size: 9pt; margin-bottom: 3pt; }
+  .hl { background: #fde58a; padding: 0 1pt; }
+  .sticky { width: 120pt; min-height: 104pt; background: #fff1a8; border-radius: 4pt; padding: 8pt; font-size: 8.8pt; line-height: 1.35; box-shadow: 0 2pt 5pt rgba(0,0,0,.12); }
+  .sticky .foot { margin-top: 6pt; color: #444; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 14pt; }
+  .toc { margin-top: 18pt; border-top: 1.2pt solid var(--ink); }
+  .toc div { display: flex; justify-content: space-between; border-bottom: .6pt solid var(--rule); padding: 5pt 0; }
+  .toc span:last-child { color: var(--muted); }
+  .small { font-size: 9pt; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<!-- ============ COVER ============ -->
+<section class="first cover">
+  <div>
+    <div class="kicker">User guide</div>
+    <h1>Comment-to-Code</h1>
+    <p class="lede">Qualitative coding with the tools you already use. Code transcripts by commenting in Google Docs or Word, see every code gathered in a Google Sheet, and build themes together on a FigJam board.</p>
+
+    <div class="flow">
+      <div class="box"><b>1 · Documents</b><span>Highlight a passage, comment <span class="tag">#code</span>. Google Docs or Word files in one Drive folder.</span></div>
+      <div class="arrow">→</div>
+      <div class="box"><b>2 · Google Sheet</b><span>Every coded excerpt becomes a row. Rename and merge codes here.</span></div>
+      <div class="arrow">→</div>
+      <div class="box"><b>3 · FigJam board</b><span>One sticky per excerpt and code. Drag them into sections: those are your themes.</span></div>
+    </div>
+    <div class="back">← themes and any codes you change on the board flow back to the Sheet and the documents</div>
+
+    <div class="toc">
+      <div><span>Part 1 · Coding: for everyone</span><span>2</span></div>
+      <div><span>Part 2 · The Sheet</span><span>3</span></div>
+      <div><span>Part 3 · The board and themes</span><span>4</span></div>
+      <div><span>Part 4 · Working as a team</span><span>5</span></div>
+      <div><span>Part 5 · Setting up a new project (once, by one person)</span><span>6</span></div>
+      <div><span>Part 6 · Installing the FigJam plugin</span><span>7</span></div>
+      <div><span>Part 7 · Troubleshooting</span><span>8</span></div>
+    </div>
+  </div>
+  <p class="meta">Version 1 · September 2026<br>Designed for reflexive thematic analysis: codes are expected to change, and the tool keeps a record of how they did.</p>
+</section>
+
+<!-- ============ PART 1 ============ -->
+<section>
+  <div class="kicker">Part 1</div>
+  <h2>Coding: for everyone</h2>
+  <p>You code by commenting. There's no new app to learn and nothing to install for this part.</p>
+
+  <div class="example">
+    <div class="comment">
+      <div class="who">In the transcript</div>
+      P03: Honestly? <span class="hl">It's the only place I'm allowed to fail.</span> Nobody grades it.
+    </div>
+    <div class="comment">
+      <div class="who">Your comment</div>
+      <span class="tag">#permission-to-fail</span> <span class="tag">#refuge</span><br>
+      Studio as a place outside assessment. Compare P02.
+    </div>
+  </div>
+
+  <ol class="steps">
+    <li><b>Open a transcript in the project folder.</b> Google Docs and Word (.docx) files both work.</li>
+    <li><b>Highlight the passage you want to code,</b> then add a comment: in Google Docs, <span class="menu">Insert → Comment</span> or <code>⌘/Ctrl + Alt + M</code>.</li>
+    <li><b>Write one or more <span class="tag">#tags</span>, then any note you like.</b> The tags are your codes; everything else becomes your <em>memo</em>.</li>
+    <li><b>That's it.</b> Within about 10 minutes the excerpt appears in the Sheet. Your project lead can also run <span class="menu">Coding → Sync now</span>.</li>
+  </ol>
+
+  <h3>Tag rules</h3>
+  <table>
+    <tr><th>You write</th><th>What happens</th></tr>
+    <tr><td><span class="tag">#belonging</span></td><td>A code. Tags start with a letter and can contain letters, numbers, <code>-</code> and <code>_</code>. Capitals don't matter: <span class="tag">#Belonging</span> is the same code.</td></tr>
+    <tr><td><span class="tag">#failure/ritual</span></td><td>A <b>subcode</b>: <em>ritual</em> under <em>failure</em>.</td></tr>
+    <tr><td><span class="tag">#care</span> <span class="tag">#voice</span></td><td>Two codes on one excerpt. It becomes two rows and two stickies, so each code's count is right.</td></tr>
+    <tr><td>A comment with no tag</td><td>Kept as an <b>uncoded note</b>. Useful while you're still getting to know the data.</td></tr>
+    <tr><td>A reply to a comment</td><td>Added to the memo, with the replier's name and date. Good for talking with a second coder.</td></tr>
+    <tr><td>Resolving a comment</td><td>Nothing is lost. The row stays and is marked resolved.</td></tr>
+    <tr><td>Deleting a comment, or removing a tag</td><td>The row is kept but greyed out with a line through it, as an audit trail.</td></tr>
+    <tr><td><code>#1</code>, <code>example.com/#part</code></td><td>Ignored: numbers and web links aren't codes.</td></tr>
+  </table>
+
+  <div class="note"><b>Changing your mind is normal.</b> To rename a code you've used many times, don't edit every comment. Rename or merge it once in the Sheet (Part 2) or on the board (Part 3).</div>
+
+  <div class="warn"><b>Working in Word?</b> Word desktop comments are read too. When you update a file, upload it as a <b>new version of the same file</b> (in Drive: right-click → <span class="menu">File information → Manage versions → Upload new version</span>). Uploading it as a new file creates duplicate rows.</div>
+</section>
+
+<!-- ============ PART 2 ============ -->
+<section>
+  <div class="kicker">Part 2</div>
+  <h2>The Sheet</h2>
+  <p>The Sheet opens on <b>Codings</b>. Use the <span class="menu">Coding</span> menu at the top for everything the tool does.</p>
+
+  <table>
+    <tr><th>Tab</th><th>What it's for</th></tr>
+    <tr><td><b>Codings</b></td><td>One row per excerpt and code: file (click to jump to the comment), excerpt, raw code, memo, author, participant, code, theme. <b>Add your own columns to the right</b>; the sync never touches them.</td></tr>
+    <tr><td><b>Themes</b></td><td>One row per theme and sub-theme from the board: how many stickies, how many distinct codes, which codes (most frequent first) and which participants. Shows where the weight of your analysis falls.</td></tr>
+    <tr><td><b>Codes</b></td><td>Every code ever used. This is where you <b>rename and merge</b> (see below). <code>count</code> is live excerpts; <code>board_themes</code> shows where each code's stickies sit on the board.</td></tr>
+    <tr><td><b>Sources</b></td><td>One row per file. Fill in <code>participant</code> (e.g. <code>P03</code>) and it appears on every row and sticky from that file. Untick <code>include</code> to leave a file out.</td></tr>
+    <tr><td class="small">Hidden: Board history, Recodes, Log</td><td class="small">Records kept for your write-up: a dated snapshot of the board on every Sync, every recode made on the board and by whom, and every sync run. Right-click any tab → <span class="menu">Show</span> to see them.</td></tr>
+  </table>
+
+  <h3>code_raw and code</h3>
+  <p><code>code_raw</code> is exactly what was typed in the comment. <code>code</code> is what it means <em>now</em>. They're the same until you change your mind. Then:</p>
+  <ol class="steps">
+    <li><b>Go to the Codes tab.</b></li>
+    <li><b>Change the <code>canonical</code> cell.</b> E.g. set <span class="tag">belong</span>'s canonical to <span class="tag">belonging</span> to merge them, or set it to <span class="tag">sense-of-home</span> to rename.</li>
+    <li><b>Done.</b> Every row's <code>code</code> updates, and the stickies update on the next board Sync. The comments aren't touched, so <code>code_raw</code> keeps the history of how your coding developed.</li>
+  </ol>
+  <p class="small"><code>manual_theme</code> in Codes is a fallback label for excerpts that aren't on the board yet. Once a sticky sits in a theme section, the board wins. <code>colour</code> sets a code's sticky colour when the board is coloured by code (a name like <code>yellow</code> or a hex like <code>#ffd6a5</code>).</p>
+
+  <div class="warn"><b>Sorting in a shared Sheet.</b> Sorting the Codings tab reorders it for everyone. To sort or filter for yourself, use <span class="menu">Data → Create filter view</span> instead. Columns the sync writes show a warning if you edit them, because the next sync would overwrite your change. Change the comment, the board, or the Codes tab instead.</div>
+</section>
+
+<!-- ============ PART 3 ============ -->
+<section>
+  <div class="kicker">Part 3</div>
+  <h2>The board and themes</h2>
+  <p>The FigJam board is where you build themes. One button, <b>Sync</b>, keeps the board, the Sheet and the documents in step. It <b>sends</b> what you've done on the board first, then <b>pulls</b> any new excerpts.</p>
+
+  <div class="two">
+    <div>
+      <h3>What a sticky shows</h3>
+      <p>The excerpt, the participant and the code, plus the first line of the memo. There's one sticky for each excerpt and code, so the size of a cluster tells you how much sits in it.</p>
+      <p>Select a sticky and click <span class="menu">Open source passage</span> to jump to the comment in the document.</p>
+    </div>
+    <div style="display:flex;justify-content:center;align-items:center">
+      <div class="sticky">“It's the only place I'm allowed to fail.”<div class="foot">P03 · #permission-to-fail<br>✎ Studio as a place outside assessment.</div></div>
+    </div>
+  </div>
+
+  <h3>Making themes</h3>
+  <ol class="steps">
+    <li><b>The first Sync puts each code in its own section.</b> These code sections are a starting layout, not themes.</li>
+    <li><b>Make a section and name it after a theme</b>, e.g. <em>Studio as refuge</em>. (Section tool: <code>S</code>, or from the toolbar.) Drag in stickies from <em>any</em> codes. A theme can hold as many codes and subcodes as you like, and a code can be spread across several themes.</li>
+    <li><b>Put a section inside a section for a sub-theme,</b> e.g. <em>Failure as ritual</em> inside <em>Studio as refuge</em>. It's recorded as <code>Studio as refuge › Failure as ritual</code>.</li>
+    <li><b>Or rename a code section</b> to a theme name. It then counts as a theme too.</li>
+    <li><b>Click Sync.</b> The Themes tab, each row's <code>theme</code>, Codes → <code>board_themes</code> and Board history all update.</li>
+  </ol>
+
+  <h3>Changing a code on the board</h3>
+  <p>Edit the <span class="tag">#tag</span> at the bottom of a sticky, e.g. change <span class="tag">#mood</span> to <span class="tag">#atmosphere</span>, then Sync. The change is written back into the document, and the sticky stays where it is:</p>
+  <ul>
+    <li><b>Your project lead's own Google Doc comments</b> are edited in place.</li>
+    <li><b>Anyone else's comments</b> get a reply: <code>↻ #mood → #atmosphere (Sam, via board)</code>. Their words aren't changed, and the reply counts as the recode.</li>
+    <li><b>Word comments</b> are edited inside the file, which is saved as a new version. Drive keeps the old one, so any change can be undone.</li>
+  </ul>
+  <p>Every recode is logged in the hidden <b>Recodes</b> tab: when, who, which excerpt, from, to, and how it was written.</p>
+
+  <h3>Rules that keep the board yours</h3>
+  <ul>
+    <li><b>Sync never moves a sticky</b> once it's on the board. It only updates the text and colour.</li>
+    <li><b>New excerpts arrive in a section called <em>Unplaced (new)</em>.</b></li>
+    <li><b>Excerpts that disappear from the Sheet</b> (comment deleted, tag removed) turn grey and are marked <code>[removed]</code>. They're never deleted.</li>
+    <li><b>Your own stickies, notes, drawings and arrows</b> are left alone. Sync ignores anything it didn't create.</li>
+    <li><b>Copy-pasting a coded sticky</b> makes a plain note. The original keeps the link to the data.</li>
+    <li><b>Colour stickies by</b> theme, participant or code. The setting is shared by everyone on the board.</li>
+  </ul>
+  <div class="ok"><b>Sync at the end of every session.</b> Each Sync adds a dated snapshot to Board history, which gives you a record of how the themes developed for your reflexive account.</div>
+</section>
+
+<!-- ============ PART 4 ============ -->
+<section>
+  <div class="kicker">Part 4</div>
+  <h2>Working as a team</h2>
+  <p>Several people can code, edit the Sheet and work on the board at the same time. What to know:</p>
+  <table>
+    <tr><th>Situation</th><th>What happens</th></tr>
+    <tr><td>Everyone coding in the documents</td><td>No limits. Each comment keeps its author, shown in <code>author</code> on Codings. Replies between coders go into the memo.</td></tr>
+    <tr><td>Two people click Sync at once</td><td>The second person is told who is syncing and asked to try again in a minute. This stops the board getting duplicate stickies.</td></tr>
+    <tr><td>Several boards</td><td><b>One board per project.</b> The Sheet links to the first board that Syncs and refuses others. Use <span class="menu">Coding → Unlink FigJam board</span> to switch to a different board deliberately.</td></tr>
+    <tr><td>Auto-sync</td><td>Only one person needs to turn it on. If it's already running, the menu says who runs it.</td></tr>
+    <tr><td>Who changed a code?</td><td>Recodes on the board are logged with the Figma name of the person who made them. Board history records who ran each Sync.</td></tr>
+    <tr><td>Editing the board without the plugin</td><td>Anyone can open the board in the browser and move stickies, build theme sections and edit tags. Everything is picked up the next time <em>anyone</em> clicks Sync.</td></tr>
+  </table>
+
+  <h3>Linux users</h3>
+  <div class="warn">
+    <b>Figma has no official desktop app for Linux.</b> Until the plugin is published, it only runs in the Figma <b>desktop</b> app for Mac or Windows, so Linux users can't click <b>Sync</b> or <b>Open source passage</b>. Unofficial Linux builds of the Figma desktop app aren't supported by Figma, so don't rely on them for this.
+  </div>
+  <p><b>Everything else works fully in the browser on Linux:</b> viewing the board, moving stickies, creating and naming theme sections, nesting sub-themes, and editing tags on stickies. All of it is saved in the board and sent to the Sheet (and the documents) the next time a Mac or Windows teammate clicks Sync. So a team needs just one person with the desktop app to Sync. They don't have to be the one doing the analysis.</p>
+  <p class="small">Once the plugin is published (privately to the organisation, or on Figma Community), it will run in the browser too, and this limit goes away.</p>
+</section>
+
+<!-- ============ PART 5 ============ -->
+<section>
+  <div class="kicker">Part 5</div>
+  <h2>Setting up a new project</h2>
+  <p>One person does this once per project, in about 15 minutes. That person becomes the <b>project owner</b>: the web app runs under their Google account, and edits to the documents are made as them.</p>
+
+  <h3>A. Transcripts and Sheet</h3>
+  <ol class="steps">
+    <li><b>Put the anonymised transcripts in one Google Drive folder.</b> Subfolders are fine (e.g. one per participant). Share the folder with your team as <em>Commenter</em> or <em>Editor</em>.</li>
+    <li><b>Make your own copy of the template Sheet.</b> Open the template link and click <span class="menu">Make a copy</span>:<br>
+      <a href="https://docs.google.com/spreadsheets/d/15pygKZGIGulipCiUQ0BFFjVLE6YvBoRMJ5xwd9jFisc/copy">docs.google.com/spreadsheets/d/15pygKZGIGulipCiUQ0BFFjVLE6YvBoRMJ5xwd9jFisc/copy</a><br>
+      Give it a project name. The copy includes the script, and starts with no settings.</li>
+    <li><b>Wait for the <span class="menu">Coding</span> menu</b> to appear next to Help (reload the page if it doesn't within a few seconds).</li>
+    <li><b>Click <span class="menu">Coding → Run self-tests</span> and allow access.</b> Google shows <em>"Google hasn't verified this app"</em> because the script is your own copy, not a published app. Click <span class="menu">Advanced → Go to Comment-to-Code (unsafe)</span> → <span class="menu">Allow</span>. It asks for access to Drive (to read comments and write recodes back) and to this Sheet. You should see <b>all tests passed</b>.</li>
+    <li><b>Click <span class="menu">Coding → Set watched folder…</span></b> and paste the folder's URL.</li>
+    <li><b>Click <span class="menu">Coding → Sync now</span>.</b> The tabs are created and existing comments come in.</li>
+    <li><b>In Sources, fill in <code>participant</code></b> for each file.</li>
+    <li><b>Click <span class="menu">Coding → Start auto-sync</span></b> so new comments arrive every 10 minutes without anyone clicking.</li>
+    <li><b>Share the Sheet with your team.</b> Anyone who will use the Coding menu needs <em>Editor</em> access and must allow access once, as in step 4.</li>
+  </ol>
+
+  <h3>B. Connecting FigJam</h3>
+  <ol class="steps">
+    <li><b>Open the script:</b> in the Sheet, <span class="menu">Extensions → Apps Script</span>.</li>
+    <li><b>Deploy it as a web app:</b> <span class="menu">Deploy → New deployment</span> → click the gear next to <em>Select type</em> → <span class="menu">Web app</span>. Set <em>Execute as</em> to <b>Me</b> and <em>Who has access</em> to <b>Anyone</b> → <span class="menu">Deploy</span> → allow access if asked.</li>
+    <li><b>Copy the Web app URL</b> it shows (it ends in <code>/exec</code>). You can find it again later under <span class="menu">Deploy → Manage deployments</span>.</li>
+    <li><b>Back in the Sheet, click <span class="menu">Coding → FigJam connection details</span></b> and paste the URL when asked. The dialog then shows the <b>URL</b> and a <b>token</b>.</li>
+    <li><b>Send the URL and token privately</b> to the teammates who will run Sync (e.g. by direct message, not in a public channel).</li>
+    <li><b>Create the project's FigJam board</b> and share it with the team as <em>Can edit</em>.</li>
+  </ol>
+  <div class="note"><b>Keep the token private.</b> Anyone with the URL and token can read the coded excerpts. If it's shared too widely, click <span class="menu">Coding → Rotate FigJam token</span> and send the new one to the team.</div>
+</section>
+
+<!-- ============ PART 6 ============ -->
+<section>
+  <div class="kicker">Part 6</div>
+  <h2>Installing the FigJam plugin</h2>
+  <p>Only the people who click <b>Sync</b> need this, and only on <b>Mac or Windows</b>. Everyone else can use the board in the browser.</p>
+  <ol class="steps">
+    <li><b>Install the Figma desktop app</b> from <a href="https://www.figma.com/downloads/">figma.com/downloads</a> and sign in.</li>
+    <li><b>Download the plugin package</b> <code>Comment-to-Code-FigJam-plugin.zip</code> (from your project lead) and unzip it somewhere permanent, e.g. your Documents folder. Figma loads the plugin from this folder, so don't delete or move it afterwards.</li>
+    <li><b>Open the project's FigJam board</b> in the desktop app. You need to be on the board itself, not the Figma home screen.</li>
+    <li><b>Right-click an empty part of the canvas → <span class="menu">Plugins → Development → Import plugin from manifest…</span></b> and choose <code>manifest.json</code> inside the unzipped folder.</li>
+    <li><b>Run it:</b> right-click → <span class="menu">Plugins → Development → Comment-to-Code</span>.</li>
+    <li><b>Paste the Web app URL and token</b> from your project lead (Part 5 B) and click <b>Sync</b>. The URL and token are remembered next time.</li>
+  </ol>
+  <div class="warn"><b>"File format not recognized or failed to convert"?</b> The file was opened with <span class="menu">File → Import</span> or dragged into Figma, which expects design files. Use the plugin import in step 4, from <em>inside</em> a board.</div>
+  <div class="note"><b>Updating the plugin:</b> when you get a new package, unzip it over the old folder and run the plugin again. There's no need to re-import.</div>
+</section>
+
+<!-- ============ PART 7 ============ -->
+<section>
+  <div class="kicker">Part 7</div>
+  <h2>Troubleshooting</h2>
+  <table>
+    <tr><th>Problem</th><th>Fix</th></tr>
+    <tr><td>No <b>Coding</b> menu</td><td>Reload the Sheet and wait a few seconds. If it still doesn't show, open <span class="menu">Extensions → Apps Script</span> once, then reload.</td></tr>
+    <tr><td>"Google hasn't verified this app"</td><td>Expected for your own copy: <span class="menu">Advanced → Go to Comment-to-Code (unsafe) → Allow</span>.</td></tr>
+    <tr><td>A comment isn't in the Sheet</td><td>Auto-sync runs every 10 minutes; <span class="menu">Coding → Sync now</span> is instant. Check the file is in the watched folder, its <code>include</code> box in Sources is ticked, and the comment was actually saved. An edited comment only saves when you click <b>Save</b>.</td></tr>
+    <tr><td>Rows look out of date after a tool update</td><td><span class="menu">Coding → Full re-sync</span> re-reads every comment. Rows are updated, not duplicated.</td></tr>
+    <tr><td>Plugin: <em>Failed to fetch</em></td><td>The URL is wrong. Copy it from <span class="menu">Deploy → Manage deployments</span> (ends in <code>/exec</code>), and check that <em>Who has access</em> is <b>Anyone</b>. If the Sheet's dialog shows an old URL, use <span class="menu">Coding → Reset web app URL</span>.</td></tr>
+    <tr><td>Plugin: <em>bad token</em></td><td>The token has been rotated. Get the current one from <span class="menu">Coding → FigJam connection details</span>.</td></tr>
+    <tr><td>Plugin: <em>linked to another board</em></td><td>Each Sheet serves one board. Sync from that board, or <span class="menu">Coding → Unlink FigJam board</span> to switch.</td></tr>
+    <tr><td>Plugin: <em>… is syncing this board right now</em></td><td>A teammate's Sync is in progress. Try again in a minute.</td></tr>
+    <tr><td>Plugin: <em>⚠ … not found as plain text in the Word comment</em></td><td>Word split the tag across formatting, so it can't be edited safely. Change the tag in the document itself, then Sync.</td></tr>
+    <tr><td>No <b>Development</b> item in the Plugins menu</td><td>You're in Figma in a browser. Development plugins need the desktop app (Part 6). On Linux, see Part 4.</td></tr>
+    <tr><td>A sticky shows <code>[removed]</code></td><td>Its comment was deleted or the tag removed in the document. Delete the sticky if you don't need it, or restore the tag in the document to bring it back.</td></tr>
+    <tr><td>Something went wrong with a document</td><td>Drive keeps every version: <span class="menu">File → Version history</span> (Google Docs) or <span class="menu">Manage versions</span> (Word files). The Recodes tab shows what the board changed and when.</td></tr>
+  </table>
+
+  <h3>Quick reference</h3>
+  <div class="two">
+    <div>
+      <p><b>In documents</b><br>
+      <span class="tag">#code</span> code · <span class="tag">#code/sub</span> subcode<br>
+      text after tags = memo · replies = memo<br>
+      no tag = uncoded note</p>
+    </div>
+    <div>
+      <p><b>On the board</b><br>
+      named section = theme · section in section = sub-theme<br>
+      edit <span class="tag">#tag</span> on a sticky = recode (written back)<br>
+      <b>Sync</b> = send board, then pull new excerpts</p>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>
