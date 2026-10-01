@@ -2,7 +2,7 @@
 
 Code transcripts by commenting on them in Google Drive. Every comment lands in a Google Sheet, and the coded excerpts go onto a FigJam board as stickies for reflexive thematic analysis. The design and its reasoning are in [SPEC.md](SPEC.md).
 
-**For researchers:** see the [user guide (PDF)](docs/Comment-to-Code%20User%20Guide.pdf). It covers setup from the [template Sheet](https://docs.google.com/spreadsheets/d/15pygKZGIGulipCiUQ0BFFjVLE6YvBoRMJ5xwd9jFisc/copy) and the plugin package in `release/`. To rebuild the PDF after editing `docs/user-guide.html`, print it to PDF with headless Chrome.
+**For researchers:** see the [user guide (PDF)](docs/Comment-to-Code%20User%20Guide.pdf). It covers setup from the template Sheet (ask the project lead for the link) and the plugin package in `release/`. To rebuild the PDF after editing `docs/user-guide.html`, print it to PDF with headless Chrome.
 
 ## How you code
 
@@ -27,7 +27,7 @@ She frames the studio as the only place she's "allowed" to fail.
 2. Copy each file from `apps-script/` into the editor (same names; `.gs` files become script files). In **Project Settings**, tick "Show appsscript.json" and paste in `appsscript.json`.
    *Or with clasp:* `clasp clone <scriptId> --rootDir apps-script`, then `clasp push`.
 3. Reload the Sheet. A **Coding** menu appears.
-4. **Coding → Run self-tests** (authorise when asked). You should see 17/17 passed.
+4. **Coding → Run self-tests** (authorise when asked). You should see 28/28 passed (`npm test` in `test/` runs one extra Node-only check, so it shows 29/29).
 5. **Coding → Set watched folder…** and paste the folder URL.
 6. **Coding → Sync now**. Then fill in `participant` on the **Sources** tab.
 7. **Coding → Start auto-sync** to sync every 10 minutes.
@@ -84,3 +84,42 @@ Upload `sample-data/P99_sample_interview.docx` to your watched folder to try the
 - Word-desktop comments are re-read whenever the file changes. Editing a Word comment's text keeps its row, because rows are keyed on author and time. If Word has stripped author/date info, an edit replaces the row.
 - The plugin only works on the current FigJam page.
 - One `comments.list` call per file per run is fine for a study-sized corpus (a few hundred files).
+
+## Prior art
+
+[frnsys/drive_tagger](https://github.com/frnsys/drive_tagger) by Francis Tseng (May–July 2019) had the core idea first: pull `#tags` out of Google Drive comments and collect the tagged text into a spreadsheet. Comment-to-Code (September 2026) is a separate implementation with no shared code. It applies the same idea to reflexive thematic analysis and adds Word files, a FigJam board and write-back.
+
+| | drive_tagger (2019) | Comment-to-Code (2026) |
+|---|---|---|
+| **Runs as** | Local Python CLI (`python main.py sync FOLDER SHEET`) | Apps Script bound to the Sheet: Coding menu, plus auto-sync every 10 minutes |
+| **Auth / setup** | Your own Google Cloud OAuth `credentials.json`, with the Drive and Sheets APIs enabled | Authorise the script once inside the Sheet |
+| **Sources** | Google Docs only | Google Docs and Word `.docx` comments |
+| **Tag syntax** | `#[A-Za-z0-9-_]+`, lowercased | Unicode letters, `-`, `_`, `/` subcodes (`#failure/ritual`), lowercased |
+| **Replies** | Tags in replies count as tags | Replies are appended to the memo; `↻ #old → #new` replies recode |
+| **Resolved comments** | Skipped | Kept, with a `resolved` flag |
+| **Untagged comments** | Ignored | Kept as uncoded notes |
+| **Sheet layout** | Tag list with document counts, an "All Tags" tab, one tab per tag, comment→doc and comment→comment reference graphs | Codings (one row per excerpt × code), Sources (participants), Codes (renames and merges via `canonical`), Themes, Board history, Recodes, Log |
+| **On each sync** | Clears and rewrites every tab; deletes tabs for tags that have gone | Upserts by a stable row key; removed rows are marked `deleted`, never removed; columns Q+ belong to researchers |
+| **Renaming / merging codes** | Edit the comments themselves | Codes tab (`canonical`), so the original `code_raw` is kept |
+| **Links back** | Comment URL (`?disco=`), commenter, doc title | Comment link, author, created/modified times, file name, participant |
+| **Cross-references** | Graph of comments that link to other docs/comments | Not supported |
+| **Visual analysis** | None | FigJam plugin: one sticky per excerpt × code, sections as themes and sub-themes, board ↔ Sheet sync |
+| **Write-back** | None (read-only) | Recodes on the board are written back to the source: Google comments edited or replied to, `.docx` saved as a new version, each one logged |
+| **Team use** | Single user | Sync lock, auto-sync owner, one linked board per Sheet, copy detection |
+| **Tests** | None | Parser and `.docx` tests (Node and in-Sheet) |
+
+### For reflexive thematic analysis
+
+drive_tagger is a general-purpose tagger: its README doesn't mention thematic analysis or any other method. Comment-to-Code was designed for reflexive TA ([Braun & Clarke](https://www.thematicanalysis.net/)), where codes and themes are the researcher's own interpretation and are expected to change as the analysis develops. It has no inter-rater reliability, codebook enforcement or auto-coding, because those belong to coding-reliability approaches.
+
+How each tool fits Braun & Clarke's six phases:
+
+| Phase | drive_tagger | Comment-to-Code |
+|---|---|---|
+| **1. Familiarisation** | Untagged comments are dropped, so early notes are lost | Comments without tags are kept as uncoded notes; replies are kept as memos |
+| **2. Coding** | Tags in comments. Renaming a code means editing every comment. Each sync rewrites the sheet, so earlier codes leave no trace | Tags in comments, with a memo beside each. Codes are renamed and merged in the Codes tab, and `code_raw` keeps what you first wrote. Removed codes are marked, not deleted, so how the coding changed stays visible |
+| **3. Generating initial themes** | One tab per tag gathers each code's excerpts; grouping codes into themes happens outside the tool | Excerpt stickies on a FigJam board; you cluster them into named sections by hand, across codes |
+| **4. Developing and reviewing themes** | Not supported | Move stickies between themes, nest sub-themes (`A › B`) and recode on the board. Recodes are written back to the transcript, so the data and the themes stay in step. The Themes tab shows each theme's codes and participants, so thin or lopsided themes stand out |
+| **5. Refining, defining and naming themes** | Not supported | Rename a section and the new name reaches every excerpt's `theme`. There is no place yet for a written theme definition: keep those in a column you add yourself in Codings or Codes, or in a separate doc |
+| **6. Writing up** | The All Tags tab has excerpts with links back to the comments | Every excerpt links back to its comment, with participant and theme, ready for choosing quotes. Each Sync adds a dated snapshot to Board history, and the Recodes tab logs each change of mind. Together they form an audit trail for your reflexive account of how the themes developed |
+| **Reflexivity / team** | Records who commented | Keeps every coder's author and replies. A second coder is treated as a sounding board, not a reliability check: their recodes appear as `↻` replies, naming them, beside the original |
