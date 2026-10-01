@@ -88,6 +88,25 @@ Upload `sample-data/P99_sample_interview.docx` to your watched folder to try the
 
 [frnsys/drive_tagger](https://github.com/frnsys/drive_tagger) by Francis Tseng (May–July 2019) had the core idea first: pull `#tags` out of Google Drive comments and collect the tagged text into a spreadsheet. Comment-to-Code (September 2026) is a separate implementation with no shared code. It applies the same idea to reflexive thematic analysis and adds Word files, a FigJam board and write-back.
 
+[GrayAreaorg/drive-tagger-GA](https://github.com/GrayAreaorg/drive-tagger-GA) (September 2026) is a fork of drive_tagger by Barry Threw, Alix Rule and others at Gray Area, published as Text Tagger ([texttagger.com](https://texttagger.com)) for qualitative data analysis. It keeps the original's approach (Google Docs only, every output tab rewritten on each sync) and adds:
+
+- a `sync-all` mode that syncs many projects from a registry Sheet (project, folder, output Sheet, top tags, active, last sync, status, last error), for running unattended on a server;
+- tag counts by documents and occurrences, with common tags highlighted and an optional `--top-tags N` for per-tag tabs;
+- document → tag and tag → tag co-occurrence edgelists for network analysis, in place of the original's comment-link graphs.
+
+Comment-to-Code shares no code with the fork either. The fork is built for counting and networks across many projects; Comment-to-Code is built for one team's interpretive work: memos, renaming and merging codes, themes on a board, and recodes written back to the documents.
+
+### Timeline
+
+| Date | Version | What changed |
+|---|---|---|
+| 4 May – 9 Jul 2019 | [drive_tagger](https://github.com/frnsys/drive_tagger) (Francis Tseng, 12 commits) | Tags from Docs comments and replies into a Sheet: tag list, All Tags, one tab per tag, comment-link graphs |
+| 25 Aug 2026 | Unpublished draft of drive_tagger | Document → tag and tag → tag graphs replace the comment-link graphs; `--top-tags N` replaces a tab per tag; tabs resize to fit; fuller setup guide |
+| 9–10 Sep 2026 | [drive-tagger-GA](https://github.com/GrayAreaorg/drive-tagger-GA) (Barry Threw: "new alix version") | Occurrence counts, Tag Summary tab, `sync-all` registry mode for many projects |
+| 18–19 Sep 2026 | drive-tagger-GA (Alix Rule) | [texttagger.com](https://texttagger.com) site with privacy and terms pages |
+| 20 Sep 2026 | drive-tagger-GA | Sorted output, frequent tags highlighted |
+| 24 Sep 2026 | Comment-to-Code (Phoenix Perry), first commit | Separate implementation: Apps Script, Docs and Word comments, FigJam board, recodes written back, team sync |
+
 | | drive_tagger (2019) | Comment-to-Code (2026) |
 |---|---|---|
 | **Runs as** | Local Python CLI (`python main.py sync FOLDER SHEET`) | Apps Script bound to the Sheet: Coding menu, plus auto-sync every 10 minutes |
