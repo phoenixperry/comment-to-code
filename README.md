@@ -82,7 +82,6 @@ Upload `sample-data/P99_sample_interview.docx` to your watched folder to try the
 
 - Polling, not push: new comments appear within about 10 minutes, or straight away with **Sync now**.
 - Word-desktop comments are re-read whenever the file changes. Editing a Word comment's text keeps its row, because rows are keyed on author and time. If Word has stripped author/date info, an edit replaces the row.
-- The plugin only works on the current FigJam page.
 - One `comments.list` call per file per run is fine for a study-sized corpus (a few hundred files).
 
 ## Prior art
