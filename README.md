@@ -84,7 +84,7 @@ Upload `sample-data/P99_sample_interview.docx` to your watched folder to try the
 - Word-desktop comments are re-read whenever the file changes. Editing a Word comment's text keeps its row, because rows are keyed on author and time. If Word has stripped author/date info, an edit replaces the row.
 - One `comments.list` call per file per run is fine for a study-sized corpus (a few hundred files).
 
-## Prior art
+## Prior work
 
 [frnsys/drive_tagger](https://github.com/frnsys/drive_tagger) by Francis Tseng (May–July 2019) had the core idea first: pull `#tags` out of Google Drive comments and collect the tagged text into a spreadsheet. Comment-to-Code (September 2026) is a separate implementation with no shared code. It applies the same idea to reflexive thematic analysis and adds Word files, a FigJam board and write-back.
 
