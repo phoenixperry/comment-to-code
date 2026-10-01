@@ -141,3 +141,7 @@ How each tool fits Braun & Clarke's six phases:
 | **5. Refining, defining and naming themes** | Not supported | Rename a section and the new name reaches every excerpt's `theme`. There is no place yet for a written theme definition: keep those in a column you add yourself in Codings or Codes, or in a separate doc |
 | **6. Writing up** | The All Tags tab has excerpts with links back to the comments | Every excerpt links back to its comment, with participant and theme, ready for choosing quotes. Each Sync adds a dated snapshot to Board history, and the Recodes tab logs each change of mind. Together they form an audit trail for your reflexive account of how the themes developed |
 | **Reflexivity / team** | Records who commented | Keeps every coder's author and replies. A second coder is treated as a sounding board, not a reliability check: their recodes appear as `↻` replies, naming them, beside the original |
+
+## License
+
+[MIT](LICENSE) © 2026 Phoenix Perry. This covers Comment-to-Code only, not the projects listed under Prior work.
