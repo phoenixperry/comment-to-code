@@ -86,12 +86,12 @@ Upload `sample-data/P99_sample_interview.docx` to your watched folder to try the
 
 ## Collaborators
 
-- **Francis Tseng**: author of [drive_tagger](https://github.com/frnsys/drive_tagger), the code this project's core idea comes from.
-- **Alix Rule**: collaborator. She didn't write code for this project.
+- **Alix Rule**: collaborator. The idea is hers. She didn't write code for this project.
+- **Francis Tseng**: built the first version of her idea, [drive_tagger](https://github.com/frnsys/drive_tagger) (2019).
 
 ## Prior work
 
-[frnsys/drive_tagger](https://github.com/frnsys/drive_tagger) by Francis Tseng (May–July 2019) had the core idea first: pull `#tags` out of Google Drive comments and collect the tagged text into a spreadsheet. Comment-to-Code (September 2026) is a separate implementation with no shared code. It applies the same idea to reflexive thematic analysis and adds Word files, a FigJam board and write-back.
+[frnsys/drive_tagger](https://github.com/frnsys/drive_tagger) by Francis Tseng (May–July 2019) was the first version of Alix Rule's idea: pull `#tags` out of Google Drive comments and collect the tagged text into a spreadsheet. Comment-to-Code (September 2026) is a separate implementation with no shared code. It applies the same idea to reflexive thematic analysis and adds Word files, a FigJam board and write-back.
 
 [GrayAreaorg/drive-tagger-GA](https://github.com/GrayAreaorg/drive-tagger-GA) (September 2026) is a fork of drive_tagger by Barry Threw, Alix Rule and others at Gray Area, published as Text Tagger ([texttagger.com](https://texttagger.com)) for qualitative data analysis. It keeps the original's approach (Google Docs only, every output tab rewritten on each sync) and adds:
 
