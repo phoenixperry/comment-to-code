@@ -102,7 +102,7 @@ Comment-to-Code shares no code with the fork either. The fork is built for count
 |---|---|---|
 | 4 May – 9 Jul 2019 | [drive_tagger](https://github.com/frnsys/drive_tagger) (Francis Tseng, 12 commits) | Tags from Docs comments and replies into a Sheet: tag list, All Tags, one tab per tag, comment-link graphs |
 | 25 Aug 2026 | Unpublished draft of drive_tagger (emailed to Phoenix Perry on 27 Aug 2026) | Document → tag and tag → tag graphs replace the comment-link graphs; `--top-tags N` replaces a tab per tag; tabs resize to fit; fuller setup guide |
-| 9–10 Sep 2026 | [drive-tagger-GA](https://github.com/GrayAreaorg/drive-tagger-GA) (Barry Threw: "new alix version") | Occurrence counts, Tag Summary tab, `sync-all` registry mode for many projects |
+| 9–10 Sep 2026 | [drive-tagger-GA](https://github.com/GrayAreaorg/drive-tagger-GA) (Barry Threw: "new Alix Rule version") | Occurrence counts, Tag Summary tab, `sync-all` registry mode for many projects |
 | 18–19 Sep 2026 | drive-tagger-GA (Alix Rule) | [texttagger.com](https://texttagger.com) site with privacy and terms pages |
 | 20 Sep 2026 | drive-tagger-GA | Sorted output, frequent tags highlighted |
 | 24 Sep 2026 | Comment-to-Code (Phoenix Perry), first commit | Separate implementation: Apps Script, Docs and Word comments, FigJam board, recodes written back, team sync |
