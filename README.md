@@ -86,7 +86,7 @@ Upload `sample-data/P99_sample_interview.docx` to your watched folder to try the
 
 ## Collaborators
 
-- **Alix Rule**: collaborator. The idea is hers. She didn't write code for this project.
+- **Alix Rule**: collaborator. The idea of making tags using a # go into a spreadsheet is hers as are the base features in her tool below. She is working on the related researh it is being used with.
 - **Francis Tseng**: built the first version of her idea, [drive_tagger](https://github.com/frnsys/drive_tagger) (2019).
 
 ## Prior work
